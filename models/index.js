@@ -1,5 +1,4 @@
-import { model } from 'mongoose';
+import { model } from "mongoose";
+import SchemaPrice from "./price";
 
-import SchemaPrice from './price';
-
-export const Price = model('price', SchemaPrice);
+export const Price = model("price", SchemaPrice);
