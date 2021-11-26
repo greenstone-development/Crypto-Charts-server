@@ -43,18 +43,24 @@ router.get("/round/:id", async (ctx) => {
   ctx.body = await getRoundData(id);
 });
 
+//! Warning: This will clear the existing db collection.
 router.get("/save", async (ctx) => {
-  const promises = [];
+  const calls = [];
 
   let roundStart = ethers.BigNumber.from("0x020000000000000001");
-  // Rounds 0 to 14304
-  for (let i = 0; i < 2; i++) {
+  // Rounds 0 to 14876 (11/25/2021 7:18pm)
+  for (let i = 0; i < 14876; i++) {
     const curRound = roundStart.toString();
-    promises.push(getRoundData(curRound));
+    calls.push(() => getRoundData(curRound));
     roundStart = roundStart.add(1);
   }
-  const results = await Promise.all(promises);
-  await db.addDataPoints(results);
+
+  const allData = [];
+  while (calls.length) {
+    const data = await Promise.all(calls.splice(0, 100).map(call => call()) );
+    allData.push(...data);
+  }
+  await db.addDataPoints(allData);
 
   ctx.body = "Done";
 });

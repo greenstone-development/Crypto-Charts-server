@@ -1,11 +1,11 @@
 import { Schema } from "mongoose";
 
 const SchemaMain = new Schema({
-  roundId: Number,
+  roundId: String,
   price: Number,
   startedAt: Date,
   updatedAt: Date,
-  answeredInRound: Number,
+  answeredInRound: String,
 });
 
 export default SchemaMain;
