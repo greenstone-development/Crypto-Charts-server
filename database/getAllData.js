@@ -1,6 +1,6 @@
-import { Price } from "../models";
+const { Price } = require("../models");
 
-export default async function getAllData() {
+async function getAllData() {
   console.log("Getting all records");
   try {
     return await Price.find({});
@@ -9,3 +9,5 @@ export default async function getAllData() {
   }
   return null;
 }
+
+module.exports = getAllData;

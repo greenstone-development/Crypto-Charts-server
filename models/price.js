@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+const { Schema } = require("mongoose");
 
 const SchemaMain = new Schema(
   {
@@ -17,4 +17,4 @@ const SchemaMain = new Schema(
   { toJSON: { getters: true } }
 );
 
-export default SchemaMain;
+module.exports = SchemaMain;

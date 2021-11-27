@@ -1,8 +1,8 @@
-import addAllData from "./addAllData";
-import getAllData from "./getAllData";
-import getByDateRange from "./getByDateRange";
+const addAllData = require("./addAllData");
+const getAllData = require("./getAllData");
+const getByDateRange = require("./getByDateRange");
 
-export default {
+module.exports = {
   addAllData,
   getAllData,
   getByDateRange,

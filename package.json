@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon --require dotenv/config server.js"
   },
   "keywords": [],
   "author": "Marvin Yan",
@@ -14,10 +14,10 @@
     "chart.js": "^2.9.4",
     "chartjs-node-canvas": "^3.2.0",
     "dotenv": "^10.0.0",
-    "esm": "^3.2.25",
     "ethers": "^5.5.1",
     "koa": "^2.13.4",
-    "mongoose": "^6.0.13"
+    "mongoose": "^6.0.13",
+    "nft.storage": "^5.0.0"
   },
   "devDependencies": {
     "eslint": "^8.3.0",

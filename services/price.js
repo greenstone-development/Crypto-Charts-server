@@ -1,11 +1,7 @@
-import { ethers } from "ethers";
-import { config } from "dotenv";
-
-import { abi } from "../utils/PriceConsumerV3.json";
-import db from "../database";
-import createChartImage from "./chart";
-
-config();
+const { ethers } = require("ethers");
+const { abi } = require("../utils/PriceConsumerV3.json");
+const db = require("../database");
+const { createChartImage, uploadImage } = require("./chart");
 
 const provider = new ethers.providers.JsonRpcProvider(
   process.env.ALCHEMY_HTTP_RINKEBY
@@ -28,7 +24,7 @@ function formatRoundData(data) {
   };
 }
 
-export async function getLatestRoundData() {
+async function getLatestRoundData() {
   console.log("Getting latest round data");
 
   const rawData = await priceConsumerContract.latestRoundData();
@@ -38,7 +34,7 @@ export async function getLatestRoundData() {
   return formattedData;
 }
 
-export async function getRoundData(id) {
+async function getRoundData(id) {
   console.log(`Getting data at round id# ${id}`);
 
   const rawData = await priceConsumerContract.getRoundData(id);
@@ -49,7 +45,7 @@ export async function getRoundData(id) {
 }
 
 // Returns the USD price of 1 ETH
-export async function getLatestPrice() {
+async function getLatestPrice() {
   const formattedData = await getLatestRoundData();
   return formattedData.price;
 }
@@ -57,7 +53,7 @@ export async function getLatestPrice() {
 //! Warning: This will clear the existing db collection.
 // TODO: Set limit to round id of getLatestRoundData()
 // TODO: Convert function to perpetual loop that checks for new rounds
-export async function syncDbWithDataFeed() {
+async function syncDbWithDataFeed() {
   console.log("Syncing db with data feed...");
 
   const calls = [];
@@ -87,7 +83,7 @@ async function getPricesByDateRange(startDateMs, endDateMs) {
   return db.getByDateRange(startDateSec, endDateSec);
 }
 
-export async function generateMetadata() {
+async function generateMetadata() {
   //* only months are 0 indexed
   const lastDate = new Date(2021, 10, 2);
   let curDate = new Date(2021, 1, 1);
@@ -118,8 +114,18 @@ export async function generateMetadata() {
   monthlyPriceData.forEach((monthlyData, i) => {
     createChartImage(monthlyData, i);
     // Upload SVG to IPFS/Filecoin
+    uploadImage();
     // Create the JSON metadata with URL and optional financial stats
     // Call contract to add metadata
   });
   console.log("Done generating metadata");
+}
+
+
+module.exports = {
+  getLatestRoundData,
+  getRoundData,
+  getLatestPrice,
+  syncDbWithDataFeed,
+  generateMetadata,
 }

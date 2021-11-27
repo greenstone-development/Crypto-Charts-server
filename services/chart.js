@@ -1,7 +1,8 @@
-import { ChartJSNodeCanvas } from "chartjs-node-canvas";
-import { promises as fs } from "fs";
+const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
+const { promises: fs } = require("fs");
+const { NFTStorage, File } = require("nft.storage");
 
-export default async function createChartImage(priceData, fileName) {
+async function createChartImage(priceData, fileName) {
   const labels = [];
   const data = [];
   priceData.forEach((price) => {
@@ -106,3 +107,25 @@ export default async function createChartImage(priceData, fileName) {
   const buffer = await chartJSNodeCanvas.renderToBuffer(configuration);
   await fs.writeFile(`./output/${fileName}.png`, buffer, "base64");
 }
+
+async function uploadImage(name) {
+  const client = new NFTStorage({ token: process.env.NFTSTORAGE_API_KEY });
+
+  const metadata = await client.store({
+    name: "CryptoChart",
+    description: "Pin is not delicious beef!",
+    image: new File(
+      [
+        /* data */
+      ],
+      "pinpie.jpg",
+      { type: "image/jpg" }
+    ),
+  });
+  console.log(metadata.url);
+}
+
+module.exports = {
+  createChartImage,
+  uploadImage,
+};

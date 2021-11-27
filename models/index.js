@@ -1,4 +1,6 @@
-import { model } from "mongoose";
-import SchemaPrice from "./price";
+const { model } = require("mongoose");
+const SchemaPrice = require("./price");
 
-export const Price = model("price", SchemaPrice);
+module.exports = {
+  Price: model("price", SchemaPrice),
+};

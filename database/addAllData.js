@@ -1,6 +1,6 @@
-import { Price } from "../models";
+const { Price } = require("../models");
 
-export default async function addAllData(dataPoints) {
+async function addAllData(dataPoints) {
   console.log("Clearing collection...");
   await Price.collection.deleteMany({});
 
@@ -12,3 +12,5 @@ export default async function addAllData(dataPoints) {
     console.error("Error inserting all data points", error);
   }
 }
+
+module.exports = addAllData;

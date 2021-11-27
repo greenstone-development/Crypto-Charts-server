@@ -1,16 +1,15 @@
-import Koa from "koa";
-import Router from "@koa/router";
-import mongoose from "mongoose";
-import { config } from "dotenv";
-import {
+const Koa = require("koa");
+const Router = require("@koa/router");
+const mongoose = require("mongoose");
+const {
   getLatestPrice,
   getLatestRoundData,
   getRoundData,
   generateMetadata,
-} from "./services/price";
-import getAllData from "./database/getAllData";
+} = require("./services/price");
+const { uploadImage } = require("./services/chart");
+const getAllData = require("./database/getAllData");
 
-config();
 const PORT = 3000;
 
 const app = new Koa();
@@ -51,6 +50,11 @@ router.get("/getAllData", async (ctx) => {
 // ! Creates the NFT metadata, generates chart images, and uploads to IPFS
 router.get("/generateMetadata", async (ctx) => {
   await generateMetadata();
+  ctx.body = "Done";
+});
+
+router.get("/uploadImage", async (ctx) => {
+  await uploadImage();
   ctx.body = "Done";
 });
 

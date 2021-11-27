@@ -1,6 +1,6 @@
-import { Price } from "../models";
+const { Price } = require("../models");
 
-export default async function getByDateRange(startDate, endDate) {
+async function getByDateRange(startDate, endDate) {
   try {
     console.log(`Getting records for date range [${startDate} to ${endDate})`);
     return await Price.find({
@@ -14,3 +14,5 @@ export default async function getByDateRange(startDate, endDate) {
   }
   return null;
 }
+
+module.exports = getByDateRange;
