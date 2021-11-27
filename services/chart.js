@@ -41,8 +41,8 @@ export default async function createSVG(priceData, fileName) {
               100,
               0
             );
-            gradientStroke.addColorStop(0, "#80b6f4");
-            gradientStroke.addColorStop(1, "#f49080");
+            gradientStroke.addColorStop(0, "#69a9f2");
+            gradientStroke.addColorStop(1, "#f27b69");
             return gradientStroke;
           },
           borderColor: (ctx) => {
@@ -52,8 +52,8 @@ export default async function createSVG(priceData, fileName) {
               100,
               0
             );
-            gradientStroke.addColorStop(0, "#80b6f4");
-            gradientStroke.addColorStop(1, "#f49080");
+            gradientStroke.addColorStop(0, "#69a9f2");
+            gradientStroke.addColorStop(1, "#f27b69");
             return gradientStroke;
           },
         },

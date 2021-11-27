@@ -117,6 +117,9 @@ export async function generateMetadata() {
   const monthlyPriceData = await Promise.all(pendingData);
   monthlyPriceData.forEach((monthlyData, i) => {
     createSVG(monthlyData, i);
+    // Upload SVG to IPFS/Filecoin
+    // Create the JSON metadata with URL and optional financial stats
+    // Call contract to add metadata
   });
   console.log("Done generating metadata");
 }

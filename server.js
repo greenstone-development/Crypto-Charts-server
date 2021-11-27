@@ -8,6 +8,7 @@ import {
   getRoundData,
   generateMetadata,
 } from "./services/price";
+import getAllData from "./database/getAllData";
 
 config();
 const PORT = 3000;
@@ -43,6 +44,11 @@ router.get("/round/:id", async (ctx) => {
   ctx.body = await getRoundData(id);
 });
 
+router.get("/getAllData", async (ctx) => {
+  ctx.body = await getAllData();
+});
+
+// ! Creates the NFT metadata, generates chart images, and uploads to IPFS
 router.get("/generateMetadata", async (ctx) => {
   await generateMetadata();
   ctx.body = "Done";
