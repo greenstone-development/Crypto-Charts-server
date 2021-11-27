@@ -1,7 +1,7 @@
 import { ChartJSNodeCanvas } from "chartjs-node-canvas";
 import { promises as fs } from "fs";
 
-export default async function createSVG(priceData, fileName) {
+export default async function createChartImage(priceData, fileName) {
   const labels = [];
   const data = [];
   priceData.forEach((price) => {

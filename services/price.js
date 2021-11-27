@@ -3,7 +3,7 @@ import { config } from "dotenv";
 
 import { abi } from "../utils/PriceConsumerV3.json";
 import db from "../database";
-import createSVG from "./chart";
+import createChartImage from "./chart";
 
 config();
 
@@ -116,7 +116,7 @@ export async function generateMetadata() {
 
   const monthlyPriceData = await Promise.all(pendingData);
   monthlyPriceData.forEach((monthlyData, i) => {
-    createSVG(monthlyData, i);
+    createChartImage(monthlyData, i);
     // Upload SVG to IPFS/Filecoin
     // Create the JSON metadata with URL and optional financial stats
     // Call contract to add metadata

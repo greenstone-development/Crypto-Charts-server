@@ -34,16 +34,16 @@ const router = new Router();
 router.get("/price", async (ctx) => {
   ctx.body = await getLatestPrice();
 });
-
+// Debug route
 router.get("/round", async (ctx) => {
   ctx.body = await getLatestRoundData();
 });
-
+// Debug route
 router.get("/round/:id", async (ctx) => {
   const { id } = ctx.params;
   ctx.body = await getRoundData(id);
 });
-
+// Debug route
 router.get("/getAllData", async (ctx) => {
   ctx.body = await getAllData();
 });
