@@ -1,5 +1,9 @@
-import addDataPoints from "./addDataPoints";
+import addAllData from "./addAllData";
+import getAllData from "./getAllData";
+import getByDateRange from "./getByDateRange";
 
 export default {
-  addDataPoints,
+  addAllData,
+  getAllData,
+  getByDateRange,
 };

@@ -1,14 +1,13 @@
 import Koa from "koa";
 import Router from "@koa/router";
-import { ethers } from "ethers";
 import mongoose from "mongoose";
 import { config } from "dotenv";
 import {
   getLatestPrice,
   getLatestRoundData,
   getRoundData,
+  generateMetadata,
 } from "./services/price";
-import db from "./database";
 
 config();
 const PORT = 3000;
@@ -16,7 +15,7 @@ const PORT = 3000;
 const app = new Koa();
 const router = new Router();
 
-async function initialize() {
+(async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URL, {
       useNewUrlParser: true,
@@ -24,12 +23,13 @@ async function initialize() {
     });
     console.log("Connected to database.");
   } catch (err) {
-    console.log("Could not connect to database.");
-    console.log(err);
+    console.log("Could not connect to database.", err);
   }
-}
-initialize();
+})();
+// TODO: Enable "top-level await" ECMAScript proposal
+// Otherwise, remember db may be unconnected here
 
+// Debug routes
 router.get("/price", async (ctx) => {
   ctx.body = await getLatestPrice();
 });
@@ -43,25 +43,9 @@ router.get("/round/:id", async (ctx) => {
   ctx.body = await getRoundData(id);
 });
 
-//! Warning: This will clear the existing db collection.
-router.get("/save", async (ctx) => {
-  const calls = [];
-
-  let roundStart = ethers.BigNumber.from("0x020000000000000001");
-  // Rounds 0 to 14876 (11/25/2021 7:18pm)
-  for (let i = 0; i < 14876; i++) {
-    const curRound = roundStart.toString();
-    calls.push(() => getRoundData(curRound));
-    roundStart = roundStart.add(1);
-  }
-
-  const allData = [];
-  while (calls.length) {
-    const data = await Promise.all(calls.splice(0, 100).map(call => call()) );
-    allData.push(...data);
-  }
-  await db.addDataPoints(allData);
-
+router.get("/generateMetadata", async (ctx) => {
+  //* only months are 0 indexed
+  await generateMetadata();
   ctx.body = "Done";
 });
 
