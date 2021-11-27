@@ -44,7 +44,6 @@ router.get("/round/:id", async (ctx) => {
 });
 
 router.get("/generateMetadata", async (ctx) => {
-  //* only months are 0 indexed
   await generateMetadata();
   ctx.body = "Done";
 });

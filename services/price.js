@@ -3,6 +3,7 @@ import { config } from "dotenv";
 
 import { abi } from "../utils/PriceConsumerV3.json";
 import db from "../database";
+import createSVG from "./chart";
 
 config();
 
@@ -87,6 +88,7 @@ async function getPricesByDateRange(startDateMs, endDateMs) {
 }
 
 export async function generateMetadata() {
+  //* only months are 0 indexed
   const lastDate = new Date(2021, 10, 2);
   let curDate = new Date(2021, 1, 1);
 
@@ -112,13 +114,9 @@ export async function generateMetadata() {
     curDate = new Date(curDate.setMonth(curDate.getMonth() + 1));
   }
 
-  const allMetadata = await Promise.all(pendingData);
+  const monthlyPriceData = await Promise.all(pendingData);
+  monthlyPriceData.forEach((monthlyData, i) => {
+    createSVG(monthlyData, i);
+  });
   console.log("Done generating metadata");
-}
-
-function createSVG(data) {
-  // create an SVG price chart using price and date from data
-  
-
-
 }
