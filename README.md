@@ -18,6 +18,9 @@ This server mines Chainlink's ETH/USD data feed for historical data, generates a
 - Alchemy
 - Chainlink Data Feed
 - NFT.Storage
+- Node js
+- koa.js
+- Mongo DB
 
 ## Known issues
 1. The Chainlink data feed for ETH/USD seems to be missing historical price data between May 6, 2021 and June 4, 2021 (round IDs 0x20000000000001D91 and 0x20000000000001D92).
