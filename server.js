@@ -5,6 +5,7 @@ const {
   getLatestPrice,
   getLatestRoundData,
   getRoundData,
+  syncDbWithDataFeed,
   generateMetadata,
 } = require("./services/price");
 const { uploadImageFolder } = require("./services/chart");
@@ -50,15 +51,15 @@ router.get("/getAllData", async (ctx) => {
   ctx.body = await getAllData();
 });
 
-// ! Creates the NFT metadata, generates chart images, and uploads to IPFS
-router.get("/generateMetadata", async (ctx) => {
-  ctx.body = await generateMetadata();
+//! This will clear out the existing db collection.
+router.get("/syncDb", async (ctx) => {
+  await syncDbWithDataFeed();
+  ctx.body = "Done";
 });
 
-// Debug route
-router.get("/updateContractCharts", async (ctx) => {
-  const metadataArr = await uploadImageFolder();
-  ctx.body = metadataArr;
+//! Creates the NFT metadata, generates chart images, and uploads to IPFS.
+router.get("/generateMetadata", async (ctx) => {
+  ctx.body = await generateMetadata();
 });
 
 app.use(router.routes()).use(router.allowedMethods());

@@ -1,15 +1,25 @@
 const { ethers } = require("ethers");
-const { abi } = require("../utils/PriceConsumerV3.json");
+const { NonceManager } = require("@ethersproject/experimental");
+const { abi: priceConsumerABI } = require("../utils/PriceConsumerV3.json");
+const { abi: cryptoChartsABI } = require("../utils/CryptoCharts.json");
 const db = require("../database");
 const { createChartImage, uploadImageFolder } = require("./chart");
 
 const provider = new ethers.providers.JsonRpcProvider(
   process.env.ALCHEMY_HTTP_RINKEBY
 );
+const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+const managedWallet = new NonceManager(wallet); // Allow multiple transactions to be made simulataneously
+
 const priceConsumerContract = new ethers.Contract(
   process.env.PRICE_CONSUMER_CONTRACT_RINKEBY,
-  abi,
+  priceConsumerABI,
   provider
+);
+const nftContract = new ethers.Contract(
+  process.env.NFT_CONTRACT_RINKEBY,
+  cryptoChartsABI,
+  managedWallet
 );
 
 function formatRoundData(data) {
@@ -59,7 +69,7 @@ async function syncDbWithDataFeed() {
   const calls = [];
   let roundStart = ethers.BigNumber.from("0x020000000000000001");
 
-  // Rounds 14876 is Nov 25 2021 at 7:18pm EST
+  // Rounds 14876 is Nov 25, 2021 at 7:18pm EST
   for (let i = 0; i < 14876; i++) {
     const curRound = roundStart.toString();
     calls.push(() => getRoundData(curRound));
@@ -142,9 +152,14 @@ async function generateMetadata() {
   );
 
   const metadataArr = await uploadImageFolder(chartNames);
+  await Promise.all(
+    metadataArr.map(async (metadata, i) => {
+      console.log(metadata.url);
+      await nftContract.addChart(i, metadata.url);
+    })
+  );
 
-  // Call contract function to add metadata
-  console.log("Done generating metadata");
+  console.log("Uploaded all IPFS URLs to contract.");
   return metadataArr;
 }
 

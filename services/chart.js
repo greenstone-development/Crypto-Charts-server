@@ -95,13 +95,11 @@ async function uploadImageFolder(chartNames) {
 
   const nfts = [];
   const fullFileNames = await fs.promises.readdir("output/");
-  console.log("Read directory");
 
   await Promise.all(
-    fullFileNames.map(async (fullFileName) => {
+    fullFileNames.map(async (fullFileName, i) => {
       const fileName = fullFileName.split(".")[0];
       const filePath = `output/${fileName}.png`;
-      console.log("Read file");
 
       const fileData = new File(
         [await fs.promises.readFile(filePath)],
@@ -116,21 +114,25 @@ async function uploadImageFolder(chartNames) {
         description:
           "ETH/USD monthly chart. Created using Chainlink Data Feed, NFT.Storage, and Alchemy.",
         image: fileData,
+        attributes: [
+          {
+            trait_type: "Event",
+            value: "Chainlink Fall 2021 Hackathon",
+          },
+          {
+            trait_type: "Serial",
+            value: i,
+          },
+        ],
       });
     })
   );
 
+  nfts.sort((a, b) => a.attributes.token - b.attributes.token);
   console.log(nfts);
-  const allMetadata = nfts.map(async (nft) => {
-    const metadata = await client.store({
-      name: nft.name,
-      description: nft.description,
-      image: nft.image,
-    });
-    return metadata;
-  });
+  const allMetadata = nfts.map(async (nft) => await client.store(nft));
   const resolvedMetadata = await Promise.all(allMetadata);
-  console.log("Uploaded NFT metadata");
+  console.log("Uploaded all NFT metadata to NFT.Storage");
   return resolvedMetadata;
 }
 
