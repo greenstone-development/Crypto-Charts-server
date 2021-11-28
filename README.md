@@ -11,7 +11,7 @@ This server mines Chainlink's ETH/USD data feed for historical data, generates a
 2. `generateMetadata()` queries the database to obtain batches of monthly price data, then passes the data to `createChartImage()`.
 3. `createChartImage()` generates a chart image for each batch of price data and saves it to the `output` folder.
 4. `uploadImageFolder()` uploads all NFT metadata to IPFS and returns a metadata array.
-5. TODO: Call a contract function to store IPFS URL.
+5. TODO: Call a contract function to store IPFS URL (must be "ipfs://... /metadata.json").
 
 # Technologies Used
 - NFT (topic)

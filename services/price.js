@@ -111,16 +111,41 @@ async function generateMetadata() {
     curDate = new Date(curDate.setMonth(curDate.getMonth() + 1));
   }
 
+  const dateOptions = {
+    timeZone: "UTC",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  };
+  const dateFormatter = new Intl.DateTimeFormat("en-US", dateOptions);
+  const chartNames = [];
+
   const monthlyPriceData = await Promise.all(pendingData);
   await Promise.all(
-    monthlyPriceData.map(async (data, i) => {
-      await createChartImage(data, i);
+    monthlyPriceData.map(async (priceData, i) => {
+      const labels = [];
+      const data = [];
+      priceData.forEach((price) => {
+        labels.push(price.updatedAt);
+        data.push(price.price);
+      });
+
+      const startDateStr = dateFormatter.format(new Date(labels[0]));
+      const endDateStr = dateFormatter.format(
+        new Date(labels[labels.length - 1])
+      );
+      const dateRangeName = `${startDateStr} - ${endDateStr}`;
+      chartNames.push(dateRangeName);
+
+      await createChartImage(labels, data, i, dateRangeName);
     })
   );
 
-  const metadataArr = await uploadImageFolder();
+  const metadataArr = await uploadImageFolder(chartNames);
+
   // Call contract function to add metadata
   console.log("Done generating metadata");
+  return metadataArr;
 }
 
 module.exports = {

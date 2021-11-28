@@ -52,8 +52,7 @@ router.get("/getAllData", async (ctx) => {
 
 // ! Creates the NFT metadata, generates chart images, and uploads to IPFS
 router.get("/generateMetadata", async (ctx) => {
-  await generateMetadata();
-  ctx.body = "Done";
+  ctx.body = await generateMetadata();
 });
 
 // Debug route

@@ -2,25 +2,7 @@ const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
 const fs = require("fs");
 const { NFTStorage, File } = require("nft.storage");
 
-async function createChartImage(priceData, fileName) {
-  const labels = [];
-  const data = [];
-  priceData.forEach((price) => {
-    labels.push(price.updatedAt);
-    data.push(price.price);
-  });
-
-  const dateOptions = {
-    timeZone: "UTC",
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  };
-  const dateFormatter = new Intl.DateTimeFormat("en-US", dateOptions);
-
-  const startDate = dateFormatter.format(new Date(labels[0]));
-  const endDate = dateFormatter.format(new Date(labels[labels.length - 1]));
-
+async function createChartImage(labels, data, fileName, dateRangeName) {
   const width = 650;
   const height = 500;
 
@@ -63,7 +45,7 @@ async function createChartImage(priceData, fileName) {
     options: {
       title: {
         display: true,
-        text: ["ETH / USD", `${startDate} - ${endDate}`],
+        text: ["ETH / USD", dateRangeName],
         fontSize: 24,
         fontStyle: "normal",
         fontWeight: 300,
@@ -108,7 +90,7 @@ async function createChartImage(priceData, fileName) {
   await fs.promises.writeFile(`./output/${fileName}.png`, buffer, "base64");
 }
 
-async function uploadImageFolder() {
+async function uploadImageFolder(chartNames) {
   const client = new NFTStorage({ token: process.env.NFTSTORAGE_API_KEY });
 
   const nfts = [];
@@ -130,9 +112,9 @@ async function uploadImageFolder() {
       );
 
       nfts.push({
-        name: "CryptoChart",
+        name: chartNames[parseInt(fileName, 10)],
         description:
-          "ETH/USD monthly chart. Created using Chainlink Data Feed, NFT.storage, and Alchemy.",
+          "ETH/USD monthly chart. Created using Chainlink Data Feed, NFT.Storage, and Alchemy.",
         image: fileData,
       });
     })
