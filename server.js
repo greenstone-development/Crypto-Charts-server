@@ -29,19 +29,22 @@ const router = new Router();
 // TODO: Enable "top-level await" ECMAScript proposal
 // Otherwise, remember db may be unconnected here
 
-// Debug routes
+// Debug route
 router.get("/price", async (ctx) => {
   ctx.body = await getLatestPrice();
 });
+
 // Debug route
 router.get("/round", async (ctx) => {
   ctx.body = await getLatestRoundData();
 });
+
 // Debug route
 router.get("/round/:id", async (ctx) => {
   const { id } = ctx.params;
   ctx.body = await getRoundData(id);
 });
+
 // Debug route
 router.get("/getAllData", async (ctx) => {
   ctx.body = await getAllData();
@@ -53,9 +56,10 @@ router.get("/generateMetadata", async (ctx) => {
   ctx.body = "Done";
 });
 
+// Debug route
 router.get("/updateContractCharts", async (ctx) => {
   const metadataArr = await uploadImageFolder();
-  ctx.body = "Done";
+  ctx.body = metadataArr;
 });
 
 app.use(router.routes()).use(router.allowedMethods());

@@ -1,7 +1,7 @@
 const { ethers } = require("ethers");
 const { abi } = require("../utils/PriceConsumerV3.json");
 const db = require("../database");
-const { createChartImage, uploadImage } = require("./chart");
+const { createChartImage, uploadImageFolder } = require("./chart");
 
 const provider = new ethers.providers.JsonRpcProvider(
   process.env.ALCHEMY_HTTP_RINKEBY
@@ -97,6 +97,7 @@ async function generateMetadata() {
     console.log(prevDate);
     console.log(curDate);
 
+    // Query DB by date range
     pendingData.push(
       getPricesByDateRange(
         Date.UTC(
@@ -111,12 +112,14 @@ async function generateMetadata() {
   }
 
   const monthlyPriceData = await Promise.all(pendingData);
-  monthlyPriceData.forEach((monthlyData, i) => {
-    createChartImage(monthlyData, i);
-    uploadImage();
-    // Create the JSON metadata with URL and optional financial stats
-    // Call contract to add metadata
-  });
+  await Promise.all(
+    monthlyPriceData.map(async (data, i) => {
+      await createChartImage(data, i);
+    })
+  );
+
+  const metadataArr = await uploadImageFolder();
+  // Call contract function to add metadata
   console.log("Done generating metadata");
 }
 
