@@ -153,9 +153,9 @@ async function generateMetadata() {
 
   const metadataArr = await uploadImageFolder(chartNames);
   await Promise.all(
-    metadataArr.map(async (metadata, i) => {
+    metadataArr.map(async (metadata) => {
       console.log(metadata.url);
-      await nftContract.addChart(i, metadata.url);
+      await nftContract.addChart(metadata.url);
     })
   );
 

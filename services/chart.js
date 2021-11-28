@@ -120,7 +120,7 @@ async function uploadImageFolder(chartNames) {
             value: "Chainlink Fall 2021 Hackathon",
           },
           {
-            trait_type: "Serial",
+            trait_type: "ID",
             value: i,
           },
         ],
@@ -128,7 +128,7 @@ async function uploadImageFolder(chartNames) {
     })
   );
 
-  nfts.sort((a, b) => a.attributes.token - b.attributes.token);
+  nfts.sort((a, b) => a.attributes[1].value - b.attributes[1].value);
   console.log(nfts);
   const allMetadata = nfts.map(async (nft) => await client.store(nft));
   const resolvedMetadata = await Promise.all(allMetadata);
