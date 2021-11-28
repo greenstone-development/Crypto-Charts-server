@@ -1,5 +1,5 @@
 const { ChartJSNodeCanvas } = require("chartjs-node-canvas");
-const { promises: fs } = require("fs");
+const fs = require("fs");
 const { NFTStorage, File } = require("nft.storage");
 
 async function createChartImage(priceData, fileName) {
@@ -105,27 +105,54 @@ async function createChartImage(priceData, fileName) {
     chartCallback,
   });
   const buffer = await chartJSNodeCanvas.renderToBuffer(configuration);
-  await fs.writeFile(`./output/${fileName}.png`, buffer, "base64");
+  await fs.promises.writeFile(`./output/${fileName}.png`, buffer, "base64");
 }
 
-async function uploadImage(name) {
+async function uploadImageFolder() {
   const client = new NFTStorage({ token: process.env.NFTSTORAGE_API_KEY });
 
-  const metadata = await client.store({
-    name: "CryptoChart",
-    description: "Pin is not delicious beef!",
-    image: new File(
-      [
-        /* data */
-      ],
-      "pinpie.jpg",
-      { type: "image/jpg" }
-    ),
+  const nfts = [];
+  const fullFileNames = await fs.promises.readdir("output/");
+  console.log("Read directory");
+
+  await Promise.all(
+    fullFileNames.map(async (fullFileName) => {
+      const fileName = fullFileName.split(".")[0];
+      const filePath = `output/${fileName}.png`;
+      console.log("Read file");
+
+      const fileData = new File(
+        [await fs.promises.readFile(filePath)],
+        `${fileName}.png`,
+        {
+          type: "image/png",
+        }
+      );
+
+      nfts.push({
+        name: "CryptoChart",
+        description:
+          "ETH/USD monthly chart. Created using Chainlink Data Feed, NFT.storage, and Alchemy.",
+        image: fileData,
+      });
+    })
+  );
+
+  console.log(nfts);
+  const allMetadata = nfts.map(async (nft) => {
+    const metadata = await client.store({
+      name: nft.name,
+      description: nft.description,
+      image: nft.image,
+    });
+    return metadata;
   });
-  console.log(metadata.url);
+  const resolvedMetadata = await Promise.all(allMetadata);
+  console.log("Uploaded NFT metadata");
+  return resolvedMetadata;
 }
 
 module.exports = {
   createChartImage,
-  uploadImage,
+  uploadImageFolder,
 };

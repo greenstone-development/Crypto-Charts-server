@@ -7,7 +7,7 @@ const {
   getRoundData,
   generateMetadata,
 } = require("./services/price");
-const { uploadImage } = require("./services/chart");
+const { uploadImageFolder } = require("./services/chart");
 const getAllData = require("./database/getAllData");
 
 const PORT = 3000;
@@ -53,8 +53,8 @@ router.get("/generateMetadata", async (ctx) => {
   ctx.body = "Done";
 });
 
-router.get("/uploadImage", async (ctx) => {
-  await uploadImage();
+router.get("/updateContractCharts", async (ctx) => {
+  const metadataArr = await uploadImageFolder();
   ctx.body = "Done";
 });
 
