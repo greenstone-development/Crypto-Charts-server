@@ -1,6 +1,6 @@
 # Links to our other repos
-https://github.com/greenstone-development/Crypto-Charts-frontend
-https://github.com/greenstone-development/Crypto-Chart-Contracts
+- https://github.com/greenstone-development/Crypto-Charts-frontend
+- https://github.com/greenstone-development/Crypto-Chart-Contracts
 
 # CryptoCharts Server
 <p align="center">
