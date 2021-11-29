@@ -1,3 +1,7 @@
+# Links to our other repos
+https://github.com/greenstone-development/Crypto-Charts-frontend
+https://github.com/greenstone-development/Crypto-Chart-Contracts
+
 # CryptoCharts Server
 <p align="center">
     <img src="./output/0.png" width="325" height="250">
